@@ -1,4 +1,4 @@
-package com.baby_flashcards;
+package com.eFlashSpanish2;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

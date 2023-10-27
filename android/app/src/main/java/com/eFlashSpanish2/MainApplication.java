@@ -1,4 +1,4 @@
-package com.baby_flashcards;
+package com.eFlashSpanish2;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

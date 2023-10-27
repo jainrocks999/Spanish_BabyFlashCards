@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.baby_flashcards"
+    namespace "com.eFlashSpanish2"
     defaultConfig {
-        applicationId "com.baby_flashcards"
+        applicationId "com.eFlashSpanish2"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
