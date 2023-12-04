@@ -18,12 +18,18 @@ import {addSetting} from '../reduxToolkit/Slice2';
 import {StackActions, useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {isTablet} from 'react-native-device-info';
 var SQLite = require('react-native-sqlite-storage');
 const db = SQLite.openDatabase({
   name: 'eFlashSpanish.db',
   createFromLocation: 1,
 });
 const SettingScreen = props => {
+  const tablet = isTablet();
   useEffect(() => {
     const backAction = async () => {
       await TrackPlayer.reset();
@@ -121,7 +127,7 @@ const SettingScreen = props => {
         style={{flex: 1}}
         source={require('../../Assets4/settingscreenimg.png')}>
         <Header onPress2={() => setMute(!mute)} mute={mute} />
-        <TouchableOpacity onPress={() => setVisible(true)}>
+        {/* <TouchableOpacity onPress={() => setVisible(true)}>
           <Image
             style={{
               height: 50,
@@ -131,8 +137,12 @@ const SettingScreen = props => {
             }}
             source={require('../../Assets4/btnupgrade.png')}
           />
-        </TouchableOpacity>
-        <View style={styles.settingContainer}>
+        </TouchableOpacity> */}
+        <View
+          style={[
+            styles.settingContainer,
+            {marginTop: tablet ? '25%' : '40%'},
+          ]}>
           <Modal animationType="none" transparent={true} visible={visible}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
@@ -165,7 +175,7 @@ const SettingScreen = props => {
           <ImageBackground
             style={{flex: 1}}
             source={require('../../Assets4/settingpagebase.png')}>
-            <View style={{marginTop: '10%', marginLeft: '5%'}}>
+            <View style={{marginTop: tablet ? '7%' : '10%', marginLeft: '5%'}}>
               <Switch
                 isSetting
                 text="Question mode"
@@ -212,12 +222,12 @@ const SettingScreen = props => {
                 onPress={() => handleSwitch('English', togleSwitch.English)}
                 sw={togleSwitch.English}
               />
-              <Switch
+              {/* <Switch
                 text="Video"
                 style={styles.tx}
                 onPress={() => handleSwitch('Videos', togleSwitch.Videos)}
                 sw={togleSwitch.Videos}
-              />
+              /> */}
             </View>
           </ImageBackground>
         </View>
@@ -232,13 +242,13 @@ const SettingScreen = props => {
               await TrackPlayer.reset(), Navigation.goBack();
             }}>
             <Image
-              style={{height: 50, width: 120}}
+              style={{height: hp(6), width: wp(30)}}
               source={require('../../Assets4/btncancel_normal.png')}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => Save()}>
             <Image
-              style={{height: 50, width: 120}}
+              style={{height: hp(6), width: wp(30)}}
               source={require('../../Assets4/btnsave_normal.png')}
             />
           </TouchableOpacity>
@@ -252,21 +262,21 @@ export default SettingScreen;
 const styles = StyleSheet.create({
   settingContainer: {
     borderWidth: 2,
-    marginTop: '1%',
-    height: height / 2.0,
-    margin: '6%',
+    marginTop: '40%',
+    height: height / 1.8,
+    margin: '5%',
   },
   sw: {
     alignSelf: 'flex-end',
     marginRight: '5%',
-    fontSize: 22,
+    fontSize: wp(5),
     fontWeight: 'bold',
     color: 'black',
   },
   tx: {
     alignSelf: 'flex-end',
     marginRight: '5%',
-    fontSize: 22,
+    fontSize: wp(5),
     color: 'black',
   },
   centeredView: {
