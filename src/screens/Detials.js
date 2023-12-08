@@ -86,7 +86,7 @@ const Detials = props => {
   }, [Music]);
   const cat = useSelector(state => state.cat);
 
-  data = useSelector(state =>
+  const data = useSelector(state =>
     state.Items.filter(item => item.Category === cat.Category),
   );
   function shuffle(array) {

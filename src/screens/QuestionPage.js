@@ -179,7 +179,7 @@ const QuestionPage = props => {
   const run = async () => {
     await TrackPlayer.reset();
     let y = Math.floor(Math.random() * 4);
-    console.log('tttt....', y);
+  
     rendomdat.map((item, index) => {
       if (index === y) {
         IsPlay(item, index);

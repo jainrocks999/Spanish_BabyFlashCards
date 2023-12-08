@@ -39,7 +39,7 @@ const HorizontalList = ({items}) => {
       disapatch(addCat(catdata));
     } else if (cat.Category == 'More') {
       Linking.openURL('https://babyflashcards.com/apps.html');
-    } else {
+    } else if (cat.Category == 'Review') {
       Linking.openURL(
         'https://play.google.com/store/apps/details?id=com.eFlashSpanish2',
       );
