@@ -70,10 +70,7 @@ const QuestionPage = props => {
   const navigation = useNavigation();
   const [song, setSong] = useState();
   const [x, setX] = useState(0);
-  const [wrong0, setWrong0] = useState(false);
-  const [wrong1, setWrong1] = useState(false);
-  const [wrong2, setWrong2] = useState(false);
-  const [wrong3, setWrong3] = useState(false);
+  const [wrong, setWrong] = useState([]);
   const [count, setCount] = useState(1);
   const cat = useSelector(state => state.cat);
   const data = useSelector(state =>
@@ -132,41 +129,29 @@ const QuestionPage = props => {
     });
 
     if (indexx === x) {
-      if (x != 0) {
-        setWrong0(true);
-      }
-      if (x != 1) {
-        setWrong1(true);
-      }
-      if (x != 2) {
-        setWrong2(true);
-      }
-      if (x != 3) {
-        setWrong3(true);
-      }
+      const arr = [0, 1, 2, 3].filter(item => item != x);
+      setWrong(arr);
+
       await TrackPlayer.add(track2);
       setTimeout(() => {
-        setWrong0(false);
-        setWrong1(false);
-        setWrong2(false);
-        setWrong3(false);
+        setWrong([]);
         setrandomDat(data.sort(() => Math.random() - 0.5).slice(0, 4));
       }, 2000);
     } else {
       await TrackPlayer.add(traxck);
       switch (indexx) {
         case 0:
-          setWrong0(true);
+          setWrong([...wrong, 0]);
           break;
         case 1:
-          setWrong1(true);
+          setWrong([...wrong, 1]);
           console.log(indexx);
           break;
         case 2:
-          setWrong2(true);
+          setWrong([...wrong, 2]);
           break;
         case 3:
-          setWrong3(true);
+          setWrong([...wrong, 3]);
           break;
       }
     }
@@ -235,7 +220,8 @@ const QuestionPage = props => {
           keyExtractor={item => item.ID}
           renderItem={({item, index}) => {
             return (
-              <View
+              <TouchableOpacity
+                onPress={() => up(index)}
                 style={[
                   {
                     margin: '1%',
@@ -246,51 +232,21 @@ const QuestionPage = props => {
                   },
                 ]}>
                 <Image
-                  style={{height: '100%', width: '100%'}}
+                  style={{height: '100%', width: '100%', position: 'absolute'}}
                   source={{uri: documentsPath + item.Image}}
                 />
-              </View>
+                {wrong.includes(index) ? (
+                  <Image
+                    style={{height: '100%', width: '100%'}}
+                    source={require('../../Assets4/wrongselection.png')}
+                  />
+                ) : null}
+              </TouchableOpacity>
             );
           }}
         />
       </View>
-      <View style={styles.worgImgContainer}>
-        <TouchableOpacity onPress={() => up(0)} style={styles.wrongImg1}>
-          {wrong0 && (
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/wrongselection.png')}
-            />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => up(1)} style={styles.wrongImg2}>
-          {wrong1 && (
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/wrongselection.png')}
-            />
-          )}
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.worgImgContainer2}>
-        <TouchableOpacity onPress={() => up(2)} style={styles.wrongImg1}>
-          {wrong2 && (
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/wrongselection.png')}
-            />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => up(3)} style={styles.wrongImg2}>
-          {wrong3 && (
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/wrongselection.png')}
-            />
-          )}
-        </TouchableOpacity>
-      </View>
       <View style={{position: 'absolute', bottom: 0}}>
         <GAMBannerAd
           unitId={ads.BANNER}
