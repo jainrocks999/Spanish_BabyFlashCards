@@ -29,6 +29,8 @@ import {
   InterstitialAd,
   TestIds,
   AdEventType,
+  GAMBannerAd,
+  BannerAdSize,
 } from 'react-native-google-mobile-ads';
 import ads from './Ads';
 const adUnitId = TestIds.INTERSTITIAL;
@@ -279,6 +281,13 @@ const Detials = props => {
               )}
             </View>
           </View>
+          <GAMBannerAd
+            unitId={ads.BANNER}
+            sizes={[BannerAdSize.FULL_BANNER]}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
         </View>
       </SafeAreaView>
     </GestureRecognizer>
@@ -312,8 +321,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   imgContainer: {
-    //marginTop: '-25%',
-    borderWidth: 1,
     height: '85%',
   },
   btnContainer: {

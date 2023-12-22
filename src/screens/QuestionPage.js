@@ -23,6 +23,8 @@ import {
   InterstitialAd,
   TestIds,
   AdEventType,
+  GAMBannerAd,
+  BannerAdSize,
 } from 'react-native-google-mobile-ads';
 import {
   widthPercentageToDP as wp,
@@ -179,7 +181,7 @@ const QuestionPage = props => {
   const run = async () => {
     await TrackPlayer.reset();
     let y = Math.floor(Math.random() * 4);
-  
+
     rendomdat.map((item, index) => {
       if (index === y) {
         IsPlay(item, index);
@@ -288,6 +290,15 @@ const QuestionPage = props => {
             />
           )}
         </TouchableOpacity>
+      </View>
+      <View style={{position: 'absolute', bottom: 0}}>
+        <GAMBannerAd
+          unitId={ads.BANNER}
+          sizes={[BannerAdSize.FULL_BANNER]}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
       </View>
     </SafeAreaView>
   );

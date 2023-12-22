@@ -18,6 +18,8 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
+import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
+import ads from './Ads';
 
 const NextScreen = () => {
   const navigation = useNavigation();
@@ -126,6 +128,15 @@ const NextScreen = () => {
               Home
             </Text>
           </TouchableOpacity>
+        </View>
+        <View style={{position: 'absolute', bottom: 0}}>
+          <GAMBannerAd
+            unitId={ads.BANNER}
+            sizes={[BannerAdSize.FULL_BANNER]}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
         </View>
       </ImageBackground>
     </SafeAreaView>

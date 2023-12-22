@@ -23,6 +23,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {isTablet} from 'react-native-device-info';
+import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
+import ads from './Ads';
 var SQLite = require('react-native-sqlite-storage');
 const db = SQLite.openDatabase({
   name: 'eFlashSpanish.db',
@@ -141,7 +143,7 @@ const SettingScreen = props => {
         <View
           style={[
             styles.settingContainer,
-            {marginTop: tablet ? '25%' : '40%'},
+            {marginTop: tablet ? '22%' : '32%'},
           ]}>
           <Modal animationType="none" transparent={true} visible={visible}>
             <View style={styles.centeredView}>
@@ -254,6 +256,15 @@ const SettingScreen = props => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
+      <View style={{position: 'absolute', bottom: 0}}>
+        <GAMBannerAd
+          unitId={ads.BANNER}
+          sizes={[BannerAdSize.FULL_BANNER]}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
