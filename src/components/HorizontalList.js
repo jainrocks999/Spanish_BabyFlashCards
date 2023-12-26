@@ -30,6 +30,11 @@ const HorizontalList = ({items}) => {
   const disapatch = useDispatch();
 
   const goTo = (cat, index) => {
+    disapatch({
+      type: 'backSoundFromquestions/playWhenThePage',
+      fromDetails: false,
+      fromQuestion: false,
+    });
     if (cat.Category != 'More' && cat.Category != 'Review') {
       let catdata = {
         Category: cat.Category,

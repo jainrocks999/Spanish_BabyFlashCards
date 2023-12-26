@@ -14,7 +14,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "Baby_Flashcards";
+    return "eFlashSpanish2";
   }
   @Override
 protected void onCreate(Bundle savedInstanceState) {

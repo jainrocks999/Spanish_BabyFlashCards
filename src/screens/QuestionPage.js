@@ -7,7 +7,7 @@ import {
   Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import {height, width} from '../components/Diemenstions';
 import {StyleSheet} from 'react-native';
@@ -47,7 +47,7 @@ const QuestionPage = props => {
     interstitial.load();
     return unsubscribe;
   };
-
+  const backSound = useSelector(state => state.backSound);
   const documentsPath =
     Platform.OS === 'android'
       ? 'asset:/files/'
@@ -56,7 +56,7 @@ const QuestionPage = props => {
   useEffect(() => {
     const backAction = async () => {
       await TrackPlayer.reset();
-      navigation.dispatch(StackActions.popToTop());
+      navigation.reset({index: 0, routes: [{name: 'home'}]});
       return true;
     };
 
@@ -76,6 +76,7 @@ const QuestionPage = props => {
   const data = useSelector(state =>
     state.Items.filter(item => item.Category === cat.Category),
   );
+  const disapatch = useDispatch();
   const IsPlay = async (item, index) => {
     let isReady = await setupPlayer();
 
@@ -87,16 +88,16 @@ const QuestionPage = props => {
     let arr = [
       (track = {
         url: require('../../asset2/clickon.mp3'), // Load media from the file system
-        title: 'Ice Age',
-        artist: 'deadmau5',
+        title: 'clickon',
+        artist: 'eFlashApps',
         // Load artwork from the file system:
         //  artwork: require('../../asset2/clickon.mp3'),
         duration: null,
       }),
       (track2 = {
         url: documentsPath + item.Sound, // Load media from the file system
-        title: 'Ice Age',
-        artist: 'deadmau5',
+        title: item.Title,
+        artist: 'eFlashApps',
         // Load artwork from the file system:
         //  artwork: require('../../asset2/clickon.mp3'),
         duration: null,
@@ -174,7 +175,18 @@ const QuestionPage = props => {
       }
     });
   };
-
+  useEffect(() => {
+    backSound.fromQuestion
+      ? setTimeout(() => {
+          sound();
+          disapatch({
+            type: 'backSoundFromquestions/playWhenThePage',
+            fromDetails: false,
+            fromQuestion: false,
+          });
+        }, 500)
+      : null;
+  }, [backSound.fromQuestion == true]);
   const sound = async () => {
     await TrackPlayer.reset();
     await TrackPlayer.add(song);
@@ -187,29 +199,35 @@ const QuestionPage = props => {
         <TouchableOpacity
           onPress={async () => {
             await TrackPlayer.reset(),
-              navigation.dispatch(StackActions.popToTop());
+              navigation.reset({index: 0, routes: [{name: 'home'}]});
           }}>
           <Image
             style={styles.icon}
             source={require('../../Assets4/btnhome_normal.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => sound()}>
           <Image
             style={styles.btn2}
             source={require('../../Assets4/btnrepeat_normal.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={async () => {
             await TrackPlayer.reset(),
-              navigation.dispatch(
-                StackActions.push('setting', {pr: 'question'}),
-              );
+              disapatch({
+                type: 'backSoundFromquestions/playWhenThePage',
+                fromDetails: false,
+                fromQuestion: false,
+              });
+            navigation.dispatch(StackActions.push('setting', {pr: 'question'}));
           }}>
           <Image
             style={styles.icon}
             source={require('../../Assets4/btnsetting_normal.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
       </View>
@@ -234,10 +252,12 @@ const QuestionPage = props => {
                 <Image
                   style={{height: '100%', width: '100%', position: 'absolute'}}
                   source={{uri: documentsPath + item.Image}}
+                  resizeMode="contain"
                 />
                 {wrong.includes(index) ? (
                   <Image
                     style={{height: '100%', width: '100%'}}
+                    resizeMode="cover"
                     source={require('../../Assets4/wrongselection.png')}
                   />
                 ) : null}

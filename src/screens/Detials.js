@@ -52,6 +52,7 @@ const Detials = props => {
     return unsubscribe;
   };
   const disapatch = useDispatch();
+  const backSound = useSelector(state => state.backSound);
   const documentsPath =
     Platform.OS === 'android'
       ? 'asset:/files/'
@@ -60,7 +61,7 @@ const Detials = props => {
   useEffect(() => {
     const backAction = async () => {
       await TrackPlayer.reset();
-      navigation.dispatch(StackActions.popToTop());
+      navigation.reset({index: 0, routes: [{name: 'home'}]});
       return true;
     };
 
@@ -83,9 +84,6 @@ const Detials = props => {
 
   const setting = useSelector(state => state.setting);
 
-  useEffect(() => {
-    setupPlayer();
-  }, [Music]);
   const cat = useSelector(state => state.cat);
 
   const data = useSelector(state =>
@@ -144,16 +142,16 @@ const Detials = props => {
           Word = item.Word;
           track = {
             url: documentsPath + item.Sound, // Load media from the file system
-            title: 'Ice Age',
-            artist: 'deadmau5',
+            title: Titel,
+            artist: 'eFlashApps',
             // Load artwork from the file system:
             artwork: `asset:/files/${item.Sound}`, //ActualSound
             duration: null,
           };
           track2 = {
             url: documentsPath + item.ActualSound, // Load media from the file system
-            title: 'Ice Age',
-            artist: 'deadmau5',
+            title: Titel,
+            artist: 'eFlashApps',
             // Load artwork from the file system:
             artwork: `asset:/files/${item.Sound}`,
             duration: null,
@@ -191,7 +189,18 @@ const Detials = props => {
     }
     await TrackPlayer.play();
   };
+  useEffect(() => {
+    if (backSound.fromDetails) {
+      paly();
+      disapatch({
+        type: 'backSoundFromquestions/playWhenThePage',
+        fromDetails: false,
+        fromQuestion: false,
+      });
+    }
+  }, [backSound.fromDetails == true]);
   const paly = async () => {
+    setupPlayer();
     await TrackPlayer.reset();
     await TrackPlayer.add(Music);
     await TrackPlayer.play();
@@ -200,33 +209,42 @@ const Detials = props => {
   return (
     <GestureRecognizer
       style={{flex: 1}}
-      onSwipeLeft={() => setting.Swipe && setCount(count + 1)}
-      onSwipeRight={() => setting.Swipe && setCount(count - 1)}>
+      onSwipeLeft={() =>
+        setting.Swipe && count != data.length && setCount(count + 1)
+      }
+      onSwipeRight={() => setting.Swipe && count > 0 && setCount(count - 1)}>
       <SafeAreaView style={{flex: 1}}>
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <View style={styles.header}>
             <TouchableOpacity
               onPress={async () => {
                 await TrackPlayer.reset(),
-                  navigation.dispatch(StackActions.popToTop());
+                  navigation.reset({index: 0, routes: [{name: 'home'}]});
               }}>
               <Image
                 style={styles.icon}
                 source={require('../../Assets4/btnhome_normal.png')}
+                resizeMode="contain"
               />
             </TouchableOpacity>
             <Text style={styles.Titel}>{setting.English && Title}</Text>
             <Text style={styles.Word}>{setting.English && Word}</Text>
             <TouchableOpacity
               onPress={async () => {
-                await TrackPlayer.reset(),
-                  navigation.dispatch(
-                    StackActions.push('setting', {pr: 'details'}),
-                  );
+                await TrackPlayer.reset();
+                disapatch({
+                  type: 'backSoundFromquestions/playWhenThePage',
+                  fromDetails: false,
+                  fromQuestion: false,
+                });
+                navigation.dispatch(
+                  StackActions.push('setting', {pr: 'details'}),
+                );
               }}>
               <Image
                 style={styles.icon}
                 source={require('../../Assets4/btnsetting_normal.png')}
+                resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
@@ -240,6 +258,7 @@ const Detials = props => {
                   resizeMode: 'contain',
                 }}
                 source={{uri: Images}}
+                resizeMode="contain"
               />
             )}
           </View>
@@ -253,6 +272,7 @@ const Detials = props => {
                   <Image
                     style={styles.btn}
                     source={require('../../Assets4/btnprevious_normal.png')}
+                    resizeMode="contain"
                   />
                 </TouchableOpacity>
               )}
@@ -265,6 +285,7 @@ const Detials = props => {
               <Image
                 style={[styles.btn2]}
                 source={require('../../Assets4/btnrepeat_normal.png')}
+                resizeMode="contain"
               />
             </TouchableOpacity>
             <View style={styles.btn}>
@@ -272,10 +293,12 @@ const Detials = props => {
                 <TouchableOpacity
                   onPress={async () => {
                     setCount(count + 1);
-                  }}>
+                  }}
+                  disabled={count === data.length ? true : false}>
                   <Image
                     style={styles.btn}
                     source={require('../../Assets4/btnnext_normal.png')}
+                    resizeMode="contain"
                   />
                 </TouchableOpacity>
               )}

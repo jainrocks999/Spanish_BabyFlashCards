@@ -25,8 +25,8 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
     await TrackPlayer.reset();
     let track = {
       url: require('../../asset2/babyflashtheme.mp3'), // Load media from the file system
-      title: 'Ice Age',
-      artist: 'deadmau5',
+      title: 'babyflashtheme',
+      artist: 'eFlashApps',
       // Load artwork from the file system:
       //artwork: `asset:/files/${item.Sound}`,
       duration: null,
@@ -54,6 +54,7 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
               ? require('../../Assets4/btnsseakar.png')
               : require('../../Assets4/btnspeakarcancel.png')
           }
+          resizeMode="contain"
         />
       </TouchableOpacity>
       {home && (
@@ -71,6 +72,7 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
           <Image
             style={{height: hp(7), width: hp(7), margin: '1%'}}
             source={require('../../Assets4/btnsetting_normal.png')}
+            resizeMode="contain"
           />
         </TouchableOpacity>
       )}

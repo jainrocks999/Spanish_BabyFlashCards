@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   BackHandler,
+  ScrollView,
 } from 'react-native';
 import {height, width} from '../components/Diemenstions';
 import React, {useEffect, useState} from 'react';
@@ -32,21 +33,6 @@ const db = SQLite.openDatabase({
 });
 const SettingScreen = props => {
   const tablet = isTablet();
-  useEffect(() => {
-    const backAction = async () => {
-      await TrackPlayer.reset();
-      Navigation.goBack();
-
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   const muted = useSelector(state => state.sound);
   const pr = props.route.params.pr;
@@ -81,19 +67,38 @@ const SettingScreen = props => {
     if (pr === 'question') {
       if (!questionMode) {
         Navigation.dispatch(StackActions.replace('details'));
+        dispatch({
+          type: 'backSoundFromquestions/playWhenThePage',
+          fromDetails: false,
+          fromQuestion: false,
+        });
       } else {
         await TrackPlayer.reset();
         Navigation.dispatch(StackActions.pop());
+        dispatch({
+          type: 'backSoundFromquestions/playWhenThePage',
+          fromDetails: togleSwitch.Voice,
+          fromQuestion: questionMode,
+        });
       }
     } else if (pr === 'details') {
       if (questionMode) {
         Navigation.dispatch(StackActions.replace('question'));
+        dispatch({
+          type: 'backSoundFromquestions/playWhenThePage',
+          fromDetails: false,
+          fromQuestion: false,
+        });
       } else {
         Navigation.dispatch(StackActions.pop());
-        console.log('else called');
+        dispatch({
+          type: 'backSoundFromquestions/playWhenThePage',
+          fromDetails: togleSwitch.Voice,
+          fromQuestion: questionMode,
+        });
       }
     } else {
-      Navigation.goBack();
+      Navigation.reset({index: 0, routes: [{name: 'home'}]});
     }
     await TrackPlayer.reset();
   };
@@ -122,7 +127,30 @@ const SettingScreen = props => {
       );
     });
   };
+  useEffect(() => {
+    const backAction = async () => {
+      await TrackPlayer.reset();
+      //play.google.com/store/apps/details?id=com.eFlashFrench
+      https: if (pr == 'home') {
+        Navigation.reset({index: 0, routes: [{name: 'home'}]});
+      } else {
+        Navigation.goBack();
+        dispatch({
+          type: 'backSoundFromquestions/playWhenThePage',
+          fromDetails: togleSwitch.Voice,
+          fromQuestion: questionMode,
+        });
+      }
+      return true;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
   return (
     <SafeAreaView style={{flex: 1}}>
       <ImageBackground
@@ -140,123 +168,138 @@ const SettingScreen = props => {
             source={require('../../Assets4/btnupgrade.png')}
           />
         </TouchableOpacity> */}
-        <View
-          style={[
-            styles.settingContainer,
-            {marginTop: tablet ? '22%' : '32%'},
-          ]}>
-          <Modal animationType="none" transparent={true} visible={visible}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>
-                  Enjoy an Ad-Free Experience with Multi-tasking!
-                </Text>
-                <Text style={styles.modalText1}>
-                  Get Ad-Free version for absolutely un-interrupted Play and
-                  learn experience for your child!
-                </Text>
-                <Text style={styles.modalText1}>
-                  Start Where you left without having to view splash screen
-                  again - The upgrade supports multi-tasking.
-                </Text>
-                <View style={{flexDirection: 'row'}}>
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setVisible(false)}>
-                    <Text style={styles.textStyle}>No</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => setVisible(false)}
-                    style={[styles.button, styles.buttonClose]}>
-                    <Text style={styles.textStyle}>Yes</Text>
-                  </TouchableOpacity>
+        <ScrollView>
+          <View
+            style={[
+              styles.settingContainer,
+              {marginTop: tablet ? '22%' : '30%'},
+            ]}>
+            <Modal animationType="none" transparent={true} visible={visible}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Enjoy an Ad-Free Experience with Multi-tasking!
+                  </Text>
+                  <Text style={styles.modalText1}>
+                    Get Ad-Free version for absolutely un-interrupted Play and
+                    learn experience for your child!
+                  </Text>
+                  <Text style={styles.modalText1}>
+                    Start Where you left without having to view splash screen
+                    again - The upgrade supports multi-tasking.
+                  </Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setVisible(false)}>
+                      <Text style={styles.textStyle}>No</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => setVisible(false)}
+                      style={[styles.button, styles.buttonClose]}>
+                      <Text style={styles.textStyle}>Yes</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Modal>
-          <ImageBackground
-            style={{flex: 1}}
-            source={require('../../Assets4/settingpagebase.png')}>
-            <View style={{marginTop: tablet ? '7%' : '10%', marginLeft: '5%'}}>
-              <Switch
-                isSetting
-                text="Question mode"
-                style={styles.sw}
-                onPress={() => {
-                  setquestion(!questionMode), setToggleSwich(pre => false);
-                }}
-                onFocus={() => {
-                  console.log('rrrj');
-                }}
-                sw={questionMode}
-              />
-              <Switch
-                text="Voice"
-                style={styles.tx}
-                onPress={() => handleSwitch('Voice', togleSwitch.Voice)}
-                sw={togleSwitch.Voice}
-              />
-              <Switch
-                text="Sound"
-                style={styles.tx}
-                onPress={() =>
-                  handleSwitch('ActualVoice', togleSwitch.ActualVoice)
-                }
-                sw={togleSwitch.ActualVoice}
-              />
-              <Switch
-                text="Random Order"
-                style={styles.tx}
-                onPress={() =>
-                  handleSwitch('RandomOrder', togleSwitch.RandomOrder)
-                }
-                sw={togleSwitch.RandomOrder}
-              />
-              <Switch
-                text="Swipe"
-                style={styles.tx}
-                onPress={() => handleSwitch('Swipe', togleSwitch.Swipe)}
-                sw={togleSwitch.Swipe}
-              />
-              <Switch
-                text="English Text"
-                style={styles.tx}
-                onPress={() => handleSwitch('English', togleSwitch.English)}
-                sw={togleSwitch.English}
-              />
-              {/* <Switch
+            </Modal>
+            <ImageBackground
+              style={{flex: 1}}
+              source={require('../../Assets4/settingpagebase.png')}>
+              <View
+                style={{marginTop: tablet ? '7%' : '10%', marginLeft: '5%'}}>
+                <Switch
+                  isSetting
+                  text="Question mode"
+                  style={styles.sw}
+                  onPress={() => {
+                    setquestion(!questionMode), setToggleSwich(pre => false);
+                  }}
+                  onFocus={() => {
+                    console.log('rrrj');
+                  }}
+                  sw={questionMode}
+                />
+                <Switch
+                  text="Voice"
+                  style={styles.tx}
+                  onPress={() => handleSwitch('Voice', togleSwitch.Voice)}
+                  sw={togleSwitch.Voice}
+                />
+                <Switch
+                  text="Sound"
+                  style={styles.tx}
+                  onPress={() =>
+                    handleSwitch('ActualVoice', togleSwitch.ActualVoice)
+                  }
+                  sw={togleSwitch.ActualVoice}
+                />
+                <Switch
+                  text="Random Order"
+                  style={styles.tx}
+                  onPress={() =>
+                    handleSwitch('RandomOrder', togleSwitch.RandomOrder)
+                  }
+                  sw={togleSwitch.RandomOrder}
+                />
+                <Switch
+                  text="Swipe"
+                  style={styles.tx}
+                  onPress={() => handleSwitch('Swipe', togleSwitch.Swipe)}
+                  sw={togleSwitch.Swipe}
+                />
+                <Switch
+                  text="English Text"
+                  style={styles.tx}
+                  onPress={() => handleSwitch('English', togleSwitch.English)}
+                  sw={togleSwitch.English}
+                />
+                {/* <Switch
                 text="Video"
                 style={styles.tx}
                 onPress={() => handleSwitch('Videos', togleSwitch.Videos)}
                 sw={togleSwitch.Videos}
               /> */}
-            </View>
-          </ImageBackground>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: '10%',
-          }}>
-          <TouchableOpacity
-            onPress={async () => {
-              await TrackPlayer.reset(), Navigation.goBack();
+              </View>
+            </ImageBackground>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginHorizontal: '10%',
             }}>
-            <Image
-              style={{height: hp(6), width: wp(30)}}
-              source={require('../../Assets4/btncancel_normal.png')}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => Save()}>
-            <Image
-              style={{height: hp(6), width: wp(30)}}
-              source={require('../../Assets4/btnsave_normal.png')}
-            />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={async () => {
+                if (pr == 'home') {
+                  Navigation.reset({index: 0, routes: [{name: 'home'}]});
+                } else {
+                  await TrackPlayer.reset();
+                  dispatch({
+                    type: 'backSoundFromquestions/playWhenThePage',
+                    fromDetails: togleSwitch.Voice,
+                    fromQuestion: quesion,
+                  });
+                  Navigation.goBack();
+                }
+              }}>
+              <Image
+                style={{height: hp(6), width: wp(30)}}
+                source={require('../../Assets4/btncancel_normal.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => Save()}>
+              <Image
+                style={{height: hp(6), width: wp(30)}}
+                source={require('../../Assets4/btnsave_normal.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </ImageBackground>
-      <View style={{position: 'absolute', bottom: 0}}>
+      <View style={{position: 'relative', bottom: 0}}>
         <GAMBannerAd
           unitId={ads.BANNER}
           sizes={[BannerAdSize.FULL_BANNER]}

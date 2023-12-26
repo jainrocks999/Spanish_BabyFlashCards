@@ -38,19 +38,19 @@ const NextScreen = () => {
       'this si',
       indexx,
     );
-    if (indexx > CatagotyData.length - 3) {
-      navigation.reset({index: 0, routes: [{name: 'home'}]});
-      return;
-    }
+
     CatagotyData.map((item, index) => {
       if (index === indexx + 1) {
         let catdata = {
           Category: item.Category,
           index: index,
         };
-        navigation.dispatch(StackActions.replace('details'));
-
-        disapatch(addCat(catdata));
+        if (item.Category !== 'More') {
+          navigation.dispatch(StackActions.replace('details'));
+          disapatch(addCat(catdata));
+        } else {
+          navigation.reset({index: 0, routes: [{name: 'home'}]});
+        }
       }
     });
   };
@@ -78,6 +78,7 @@ const NextScreen = () => {
             <Image
               style={{height: '100%', width: '100%'}}
               source={require('../../Assets4/btnrepeat_normal.png')}
+              resizeMode="contain"
             />
             <Text
               style={{
@@ -96,6 +97,7 @@ const NextScreen = () => {
             <Image
               style={{height: '100%', width: '100%'}}
               source={require('../../Assets4/btnnextcatg_normal.png')}
+              resizeMode="contain"
             />
             <Text
               style={{
@@ -115,6 +117,7 @@ const NextScreen = () => {
             <Image
               style={{height: '100%', width: '100%'}}
               source={require('../../Assets4/btnhome_normal.png')}
+              resizeMode="contain"
             />
             <Text
               style={{
