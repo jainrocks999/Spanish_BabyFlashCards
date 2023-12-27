@@ -126,7 +126,6 @@ const Detials = props => {
           })
         : data?.sort();
   }
-  console.log(data[0]);
 
   const getData = async () => {
     let isSetup = await setupPlayer();
