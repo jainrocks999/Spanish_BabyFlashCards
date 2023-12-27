@@ -23,6 +23,7 @@ const Switch = ({style, text, isSetting, sw, onPress, ...props}) => {
                 ? require('../../Assets4/on.png')
                 : require('../../Assets4/off.png')
             }
+            resizeMode="contain"
           />
         )}
         {isSetting && (
@@ -33,6 +34,7 @@ const Switch = ({style, text, isSetting, sw, onPress, ...props}) => {
                 ? require('../../Assets4/on1.png')
                 : require('../../Assets4/off1.png')
             }
+            resizeMode="contain"
           />
         )}
       </TouchableOpacity>

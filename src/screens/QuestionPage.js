@@ -231,7 +231,12 @@ const QuestionPage = props => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{marginTop: tablet ? '5%' : '15%', alignSelf: 'center'}}>
+      <View
+        style={{
+          marginTop: tablet ? '5%' : '5%',
+          alignSelf: 'center',
+          paddingLeft: '2%',
+        }}>
         <FlatList
           data={rendomdat}
           numColumns={2}
@@ -242,22 +247,21 @@ const QuestionPage = props => {
                 onPress={() => up(index)}
                 style={[
                   {
-                    margin: '1%',
-                    marginHorizontal: '1%',
-                    marginVertical: '6%',
-                    height: height / 3.2,
-                    width: width / 2.15,
+                    height: hp(38),
+                    width: '46%',
+                    marginHorizontal: '1.5%',
+                    marginVertical: '1.5%',
                   },
                 ]}>
                 <Image
                   style={{height: '100%', width: '100%', position: 'absolute'}}
                   source={{uri: documentsPath + item.Image}}
-                  resizeMode="contain"
+                  resizeMode="stretch"
                 />
                 {wrong.includes(index) ? (
                   <Image
                     style={{height: '100%', width: '100%'}}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                     source={require('../../Assets4/wrongselection.png')}
                   />
                 ) : null}

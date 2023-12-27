@@ -23,6 +23,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {isTablet} from 'react-native-device-info';
 import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 import ads from './Ads';
@@ -102,7 +103,16 @@ const SettingScreen = props => {
     }
     await TrackPlayer.reset();
   };
-  //SELECT * FROM tbl_settings
+  const getPrevSetting = async mode => {
+    let res = await AsyncStorage.getItem('setting');
+    const newVal = await JSON.parse(res);
+    if (mode == false) {
+      setToggleSwich(newVal);
+    } else {
+      await AsyncStorage.setItem('setting', JSON.stringify(togleSwitch));
+      setToggleSwich(pre => false);
+    }
+  };
 
   const updateSettings = () => {
     db.transaction(tx => {
@@ -213,7 +223,8 @@ const SettingScreen = props => {
                   text="Question mode"
                   style={styles.sw}
                   onPress={() => {
-                    setquestion(!questionMode), setToggleSwich(pre => false);
+                    setquestion(!questionMode);
+                    getPrevSetting(!questionMode);
                   }}
                   onFocus={() => {
                     console.log('rrrj');
@@ -284,30 +295,30 @@ const SettingScreen = props => {
                 }
               }}>
               <Image
-                style={{height: hp(6), width: wp(30)}}
+                style={{height: hp(7), width: wp(35)}}
                 source={require('../../Assets4/btncancel_normal.png')}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => Save()}>
               <Image
-                style={{height: hp(6), width: wp(30)}}
+                style={{height: hp(7), width: wp(35)}}
                 source={require('../../Assets4/btnsave_normal.png')}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
         </ScrollView>
+        <View style={{position: 'relative', bottom: 0}}>
+          <GAMBannerAd
+            unitId={ads.BANNER}
+            sizes={[BannerAdSize.FULL_BANNER]}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </ImageBackground>
-      <View style={{position: 'relative', bottom: 0}}>
-        <GAMBannerAd
-          unitId={ads.BANNER}
-          sizes={[BannerAdSize.FULL_BANNER]}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
-      </View>
     </SafeAreaView>
   );
 };

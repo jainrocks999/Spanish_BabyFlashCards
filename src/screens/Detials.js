@@ -110,19 +110,23 @@ const Detials = props => {
     const shuffledData = shuffle([...data]);
     newData = [...shuffledData];
   } else {
-    newData = [...data]?.sort((a, b) => {
-      const titleA = a.Title.toUpperCase();
-      const titleB = b.Title.toUpperCase();
+    newData =
+      data[0].Category != 'Numbers'
+        ? [...data]?.sort((a, b) => {
+            const titleA = a.Title.toUpperCase();
+            const titleB = b.Title.toUpperCase();
 
-      if (titleA < titleB) {
-        return -1;
-      }
-      if (titleA > titleB) {
-        return 1;
-      }
-      return 0;
-    });
+            if (titleA < titleB) {
+              return -1;
+            }
+            if (titleA > titleB) {
+              return 1;
+            }
+            return 0;
+          })
+        : data?.sort();
   }
+  console.log(data[0]);
 
   const getData = async () => {
     let isSetup = await setupPlayer();
@@ -135,32 +139,28 @@ const Detials = props => {
     let Word;
     let y = data.length;
     if (count >= 0 && count <= y - 1) {
-      newData.map(async (item, index) => {
-        if (index == count) {
-          Imagess = documentsPath + item.Image;
-          Titel = item.Title;
-          Word = item.Word;
-          track = {
-            url: documentsPath + item.Sound, // Load media from the file system
-            title: Titel,
-            artist: 'eFlashApps',
-            // Load artwork from the file system:
-            artwork: `asset:/files/${item.Sound}`, //ActualSound
-            duration: null,
-          };
-          track2 = {
-            url: documentsPath + item.ActualSound, // Load media from the file system
-            title: Titel,
-            artist: 'eFlashApps',
-            // Load artwork from the file system:
-            artwork: `asset:/files/${item.Sound}`,
-            duration: null,
-          };
-          if (item.ActualSound != 1) {
-            ActualSound = item.ActualSound;
-          }
-        }
-      });
+      Imagess = documentsPath + newData[count].Image;
+      Titel = newData[count].Title;
+      Word = newData[count].Word;
+      track = {
+        url: documentsPath + newData[count].Sound, // Load media from the file system
+        title: Titel,
+        artist: 'eFlashApps',
+        // Load artwork from the file system:
+        artwork: `asset:/files/${newData[count].Sound}`, //ActualSound
+        duration: null,
+      };
+      track2 = {
+        url: documentsPath + newData[count].ActualSound, // Load media from the file system
+        title: Titel,
+        artist: 'eFlashApps',
+        // Load artwork from the file system:
+        artwork: `asset:/files/${newData[count].Sound}`,
+        duration: null,
+      };
+      if (newData[count].ActualSound != 1) {
+        ActualSound = newData[count].ActualSound;
+      }
     } else if (count < 0) {
       navigation.reset({index: 0, routes: [{name: 'home'}]});
       showAdd();
@@ -227,8 +227,8 @@ const Detials = props => {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Text style={styles.Titel}>{setting.English && Title}</Text>
-            <Text style={styles.Word}>{setting.English && Word}</Text>
+            <Text style={styles.Titel}>{setting.English ? Title : ''}</Text>
+            <Text style={styles.Word}>{setting.English ? Word : ''}</Text>
             <TouchableOpacity
               onPress={async () => {
                 await TrackPlayer.reset();
