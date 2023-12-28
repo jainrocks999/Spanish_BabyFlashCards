@@ -70,55 +70,75 @@ const NextScreen = () => {
             width: '90%',
             alignSelf: 'center',
           }}>
-          <TouchableOpacity
-            style={{height: hp('10%'), width: hp('10%')}}
-            onPress={() => {
-              navigation.dispatch(StackActions.replace('details'));
+          <View
+            style={{
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              width: '33%',
             }}>
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/btnrepeat_normal.png')}
-              resizeMode="contain"
-            />
+            <TouchableOpacity
+              style={{height: hp('10%'), width: hp('10%')}}
+              onPress={() => {
+                navigation.dispatch(StackActions.replace('details'));
+              }}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={require('../../Assets4/btnrepeat_normal.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: hp('3%'),
                 fontWeight: 'bold',
                 color: 'red',
-                marginTop: '5%',
+                marginTop: 5,
                 elevation: 5,
               }}>
               Repeat
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => getNext(cat.index)}
-            style={{height: hp('10%'), width: hp('10%')}}>
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/btnnextcatg_normal.png')}
-              resizeMode="contain"
-            />
+          </View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '33%',
+            }}>
+            <TouchableOpacity
+              onPress={() => getNext(cat.index)}
+              style={{height: hp('10%'), width: hp('10%')}}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={require('../../Assets4/btnnextcatg_normal.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: hp('3%'),
                 fontWeight: 'bold',
                 color: 'red',
-                marginTop: '5%',
+                marginTop: 5,
                 elevation: 5,
-                alignSelf: 'center',
               }}>
               Next
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.dispatch(StackActions.replace('home'))}
-            style={{height: hp('10%'), width: hp('10%')}}>
-            <Image
-              style={{height: '100%', width: '100%'}}
-              source={require('../../Assets4/btnhome_normal.png')}
-              resizeMode="contain"
-            />
+          </View>
+          <View
+            style={{
+              alignItems: 'flex-end',
+              justifyContent: 'center',
+              width: '33%',
+            }}>
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(StackActions.replace('home'))}
+              style={{height: hp('10%'), width: hp('10%')}}>
+              <Image
+                style={{height: '100%', width: '100%'}}
+                source={require('../../Assets4/btnhome_normal.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
             <Text
               style={{
                 fontSize: hp('3%'),
@@ -126,11 +146,11 @@ const NextScreen = () => {
                 color: 'red',
                 marginTop: '5%',
                 elevation: 5,
-                alignSelf: 'center',
+                marginRight: '7.3%',
               }}>
               Home
             </Text>
-          </TouchableOpacity>
+          </View>
         </View>
         <View style={{position: 'absolute', bottom: 0}}>
           <GAMBannerAd

@@ -73,6 +73,7 @@ const QuestionPage = props => {
   const [wrong, setWrong] = useState([]);
   const [count, setCount] = useState(1);
   const cat = useSelector(state => state.cat);
+  const [right, setRight] = useState(false);
   const data = useSelector(state =>
     state.Items.filter(item => item.Category === cat.Category),
   );
@@ -118,23 +119,17 @@ const QuestionPage = props => {
 
     let traxck;
     let track2;
-    WrongVoid.sort(() => Math.random() - 0.5).map((item, index) => {
-      if (index === 1) {
-        traxck = item;
-      }
-    });
-    RightVOid.sort(() => Math.random() - 0.5).map((item, index) => {
-      if (index === 1) {
-        track2 = item;
-      }
-    });
+    traxck = WrongVoid.sort(() => Math.random() - 0.5)[1];
+    track2 = RightVOid.sort(() => Math.random() - 0.5)[1];
 
     if (indexx === x) {
+      setRight(true);
       const arr = [0, 1, 2, 3].filter(item => item != x);
       setWrong(arr);
 
       await TrackPlayer.add(track2);
       setTimeout(() => {
+        setRight(false);
         setWrong([]);
         setrandomDat(data.sort(() => Math.random() - 0.5).slice(0, 4));
       }, 2000);
@@ -252,16 +247,16 @@ const QuestionPage = props => {
                     marginHorizontal: '1.5%',
                     marginVertical: '1.5%',
                   },
-                ]}>
+                ]}
+                disabled={right || wrong.includes(index) ? true : false}>
                 <Image
                   style={{height: '100%', width: '100%', position: 'absolute'}}
                   source={{uri: documentsPath + item.Image}}
-                  resizeMode="stretch"
+                  resizeMode="contain"
                 />
                 {wrong.includes(index) ? (
                   <Image
                     style={{height: '100%', width: '100%'}}
-                    resizeMode="stretch"
                     source={require('../../Assets4/wrongselection.png')}
                   />
                 ) : null}

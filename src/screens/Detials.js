@@ -226,8 +226,21 @@ const Detials = props => {
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <Text style={styles.Titel}>{setting.English ? Title : ''}</Text>
-            <Text style={styles.Word}>{setting.English ? Word : ''}</Text>
+            <View
+              style={{
+                alignItems: 'center',
+                height: '100%',
+                justifyContent: 'center',
+              }}>
+              <Text style={styles.Titel}>{setting.English ? Title : ''}</Text>
+              <Text
+                style={[
+                  styles.Titel,
+                  {fontSize: wp(4), fontWeight: '500', marginTop: hp(0.1)},
+                ]}>
+                {setting.English ? Word : ''}
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={async () => {
                 await TrackPlayer.reset();
@@ -331,7 +344,7 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   Titel: {
-    fontSize: wp(5),
+    fontSize: wp(5.5),
     fontWeight: 'bold',
     color: 'white',
     alignSelf: 'center',

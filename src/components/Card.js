@@ -12,7 +12,12 @@ const Card = ({item, onPress}) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={styles.container}
+      style={[
+        styles.container,
+        item?.Category == 'More' || item?.Category == 'Review'
+          ? {height: hp(22), width: wp(45)}
+          : {height: hp(20)},
+      ]}
       activeOpacity={0.8}>
       <Image
         style={{height: '100%', width: '100%'}}
@@ -27,13 +32,10 @@ export default Card;
 
 const styles = StyleSheet.create({
   container: {
-    // borderWidth:1,
-    height: wp('45%'),
-    width: wp('48%'),
-    marginHorizontal: '1%',
-    marginVertical: '2%',
+    height: hp(20),
+    width: wp(45),
+    margin: '2%',
     borderRadius: 20,
     overflow: 'hidden',
-    // backgroundColor:'green'
   },
 });

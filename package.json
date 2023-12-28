@@ -1,6 +1,6 @@
 {
-  "name": "Baby_Flashcards",
-  "version": "0.0.1",
+  "name": "eFlashSpanish",
+  "version": "1.5.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
