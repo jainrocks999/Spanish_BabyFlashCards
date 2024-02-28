@@ -75,7 +75,10 @@ const Detials = props => {
   const [Images, setImages] = useState('');
   const [Title, setTitle] = useState();
   const [count, setCount] = useState(0);
-  const [Music, setMusic] = useState();
+  const [Music, setMusic] = useState({
+    isActualSound: false,
+    Music: [],
+  });
   const [Word, setWord] = useState();
   const navigation = useNavigation();
   useEffect(() => {
@@ -170,12 +173,16 @@ const Detials = props => {
     setImages(Imagess);
     setTitle(Titel);
     setWord(Word);
-    if (ActualSound && setting.ActualVoice && setting.Voice) {
-      setMusic([track2, track]);
-    } else if (ActualSound && setting.ActualVoice) {
-      setMusic(track2);
+    if (ActualSound?.length > 0) {
+      setMusic({
+        isActualSound: true,
+        Music: [track2, track],
+      });
     } else {
-      setMusic(track);
+      setMusic({
+        isActualSound: false,
+        Music: [track],
+      });
     }
     if (isSetup) {
       if (ActualSound && setting.ActualVoice && setting.Voice) {
@@ -199,10 +206,23 @@ const Detials = props => {
     }
   }, [backSound.fromDetails == true]);
   const paly = async () => {
-    setupPlayer();
+    const isSetup = await setupPlayer();
     await TrackPlayer.reset();
-    await TrackPlayer.add(Music);
-    await TrackPlayer.play();
+
+    if (Music.isActualSound) {
+      if (setting.ActualVoice && setting.Voice) {
+        await TrackPlayer.add(Music.Music);
+      } else if (setting.ActualVoice) {
+        await TrackPlayer.add(Music.Music[0]);
+      } else {
+        await TrackPlayer.add(Music.Music[1]);
+      }
+    } else if (setting.Voice) {
+      await TrackPlayer.add(Music.Music);
+    }
+    if (isSetup) {
+      await TrackPlayer.play();
+    }
   };
 
   return (
@@ -212,7 +232,7 @@ const Detials = props => {
         setting.Swipe && count != data.length && setCount(count + 1)
       }
       onSwipeRight={() => setting.Swipe && count > 0 && setCount(count - 1)}>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'grey'}}>
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <View style={styles.header}>
             <TouchableOpacity
@@ -316,13 +336,15 @@ const Detials = props => {
               )}
             </View>
           </View>
-          <GAMBannerAd
-            unitId={ads.BANNER}
-            sizes={[BannerAdSize.FULL_BANNER]}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
+          <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
+            <GAMBannerAd
+              unitId={ads.BANNER}
+              sizes={[BannerAdSize.FULL_BANNER]}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </GestureRecognizer>
@@ -356,11 +378,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   imgContainer: {
-    height: '85%',
+    height: '75%',
   },
   btnContainer: {
     position: 'absolute',
-    bottom: '9%',
+    bottom: '7.5%',
     width: '98%',
     flexDirection: 'row',
     justifyContent: 'space-between',

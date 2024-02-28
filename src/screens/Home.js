@@ -90,7 +90,7 @@ const Home = () => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#73cbea'}}>
       <ImageBackground
         style={{flex: 1}}
         source={require('../../Assets4/bgnewcategory.png')}>
@@ -102,13 +102,15 @@ const Home = () => {
           home
         />
         <HorizontalList items={MyData} />
-        <GAMBannerAd
-          unitId={ads.BANNER}
-          sizes={[BannerAdSize.FULL_BANNER]}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
+        <View style={{alignSelf: 'center'}}>
+          <GAMBannerAd
+            unitId={ads.BANNER}
+            sizes={[BannerAdSize.FULL_BANNER]}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
       </ImageBackground>
       <Modal animationType="none" transparent={true} visible={visible}>
         <View style={styles.centeredView}>

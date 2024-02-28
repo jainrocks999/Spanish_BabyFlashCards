@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, FlatList, Linking} from 'react-native';
+import {View, Text, FlatList, Linking, Platform} from 'react-native';
 import {
   BannerAd,
   TestIds,
@@ -19,9 +19,9 @@ const HorizontalList = ({items}) => {
         interstitial?.show();
       },
     );
-    // Start loading the interstitial straight away
+
     interstitial?.load();
-    // Unsubscribe from events on unmount
+
     return unsubscribe;
   }, [interstitial]);
   const onBannerAdsPress = () => {
@@ -46,7 +46,11 @@ const HorizontalList = ({items}) => {
       Linking.openURL('https://babyflashcards.com/apps.html');
     } else if (cat.Category == 'Review') {
       Linking.openURL(
-        'https://play.google.com/store/apps/details?id=com.eFlashSpanish2',
+        Platform.select({
+          ios: 'https://apps.apple.com/us/app/learn-spanish-cards/id398463450',
+          android:
+            'https://play.google.com/store/apps/details?id=com.eFlashSpanish2',
+        }),
       );
     }
   };

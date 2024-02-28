@@ -57,8 +57,9 @@ const NextScreen = () => {
 
   const [mute, setMut] = useState(muted);
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#73cbea'}}>
       <ImageBackground
+        resizeMode="stretch"
         style={{flex: 1}}
         source={require('../../Assets4/settingscreenimg.png')}>
         <Header onPress2={() => setMut(!mute)} mute={mute} />
@@ -67,8 +68,8 @@ const NextScreen = () => {
             top: '70%',
             flexDirection: 'row',
             justifyContent: 'space-between',
-            width: '90%',
             alignSelf: 'center',
+            width: '90%',
           }}>
           <View
             style={{
@@ -77,7 +78,10 @@ const NextScreen = () => {
               width: '33%',
             }}>
             <TouchableOpacity
-              style={{height: hp('10%'), width: hp('10%')}}
+              style={{
+                height: hp('9%'),
+                width: hp('9%'),
+              }}
               onPress={() => {
                 navigation.dispatch(StackActions.replace('details'));
               }}>
@@ -106,7 +110,7 @@ const NextScreen = () => {
             }}>
             <TouchableOpacity
               onPress={() => getNext(cat.index)}
-              style={{height: hp('10%'), width: hp('10%')}}>
+              style={{height: hp('9%'), width: hp('9%')}}>
               <Image
                 style={{height: '100%', width: '100%'}}
                 source={require('../../Assets4/btnnextcatg_normal.png')}
@@ -132,7 +136,7 @@ const NextScreen = () => {
             }}>
             <TouchableOpacity
               onPress={() => navigation.dispatch(StackActions.replace('home'))}
-              style={{height: hp('10%'), width: hp('10%')}}>
+              style={{height: hp('9%'), width: hp('9%')}}>
               <Image
                 style={{height: '100%', width: '100%'}}
                 source={require('../../Assets4/btnhome_normal.png')}
@@ -146,13 +150,12 @@ const NextScreen = () => {
                 color: 'red',
                 marginTop: '5%',
                 elevation: 5,
-                marginRight: '7.3%',
               }}>
               Home
             </Text>
           </View>
         </View>
-        <View style={{position: 'absolute', bottom: 0}}>
+        <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
           <GAMBannerAd
             unitId={ads.BANNER}
             sizes={[BannerAdSize.FULL_BANNER]}

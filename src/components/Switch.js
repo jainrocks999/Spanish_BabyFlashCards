@@ -2,12 +2,14 @@ import {View, Text, Image, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {height, width} from './Diemenstions';
+import {isTablet} from 'react-native-device-info';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 const Switch = ({style, text, isSetting, sw, onPress, ...props}) => {
   const [TogleSwitch, setTougleSwit] = useState(false);
+  const Tablet = isTablet();
 
   return (
     <View style={{flexDirection: 'row', margin: '2%'}}>
@@ -17,7 +19,7 @@ const Switch = ({style, text, isSetting, sw, onPress, ...props}) => {
       <TouchableOpacity {...props} onPress={onPress} style={styles.pressable}>
         {isSetting === undefined && (
           <Image
-            style={styles.pre}
+            style={Tablet ? {height: 50, width: 90} : styles.pre}
             source={
               sw
                 ? require('../../Assets4/on.png')
@@ -28,7 +30,7 @@ const Switch = ({style, text, isSetting, sw, onPress, ...props}) => {
         )}
         {isSetting && (
           <Image
-            style={styles.pre}
+            style={Tablet ? {height: 50, width: 90} : styles.pre}
             source={
               sw
                 ? require('../../Assets4/on1.png')
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     marginLeft: '1%',
   },
   pre: {
-    height: wp('8%'),
-    width: wp('14%'),
+    height: 35,
+    width: 60,
   },
 });

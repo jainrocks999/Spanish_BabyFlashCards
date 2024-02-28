@@ -4,6 +4,7 @@ import {
   Alert,
   BackHandler,
   StatusBar,
+  LogBox,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import MyStack from './src/components/MyStack';
@@ -16,6 +17,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import ads from './src/screens/Ads';
 const App = () => {
+  LogBox.ignoreAllLogs();
   const appState = useRef(AppState.currentState);
   const interstitial = InterstitialAd.createForAdRequest(ads.interstitial, {
     requestNonPersonalizedAdsOnly: true,

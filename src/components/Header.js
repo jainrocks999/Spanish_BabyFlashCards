@@ -33,7 +33,7 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
     };
     if (isReady) {
       await TrackPlayer.add(track);
-      mute && (await TrackPlayer.play());
+      mute ? await TrackPlayer.play() : await TrackPlayer.reset();
     }
 
     dispatch(Sound(mute));
