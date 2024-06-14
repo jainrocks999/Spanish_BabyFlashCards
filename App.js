@@ -7,12 +7,12 @@ import Root from './src';
 const App = () => {
   LogBox.ignoreAllLogs();
   return (
-    <IAPProvider>
-      <Provider store={myStore}>
+    <Provider store={myStore}>
+      <IAPProvider>
         <StatusBar backgroundColor="#73cbea" />
         <Root />
-      </Provider>
-    </IAPProvider>
+      </IAPProvider>
+    </Provider>
   );
 };
 

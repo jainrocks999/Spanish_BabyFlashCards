@@ -41,7 +41,8 @@ const Header = ({
     };
     if (isReady) {
       await TrackPlayer.add(track);
-      mute ? await TrackPlayer.play() : await TrackPlayer.reset();
+      await TrackPlayer.setRepeatMode(0);
+      mute ? await TrackPlayer.play() : await TrackPlayer.pause();
     }
 
     dispatch(Sound(mute));
