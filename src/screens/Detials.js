@@ -8,7 +8,7 @@ import {
   BackHandler,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {FlatList} from 'react-native-gesture-handler';
 import {height, width} from '../components/Diemenstions';
@@ -33,12 +33,14 @@ import {
   BannerAdSize,
 } from 'react-native-google-mobile-ads';
 import ads from './Ads';
+import {IAPContext} from '../Context';
 const adUnitId = TestIds.INTERSTITIAL;
 
 const interstitial = InterstitialAd.createForAdRequest(ads.interstitial, {
   requestNonPersonalizedAdsOnly: true,
 });
 const Detials = props => {
+  const {hasPurchased} = useContext(IAPContext);
   const showAdd = () => {
     const unsubscribe = interstitial.addAdEventListener(
       AdEventType.LOADED,
@@ -165,10 +167,10 @@ const Detials = props => {
       }
     } else if (count < 0) {
       navigation.reset({index: 0, routes: [{name: 'home'}]});
-      showAdd();
+      !hasPurchased ? showAdd() : null;
     } else {
       navigation.dispatch(StackActions.replace('next'));
-      showAdd();
+      !hasPurchased ? showAdd() : null;
     }
     setImages(Imagess);
     setTitle(Titel);
@@ -280,21 +282,23 @@ const Detials = props => {
               />
             </TouchableOpacity>
           </View>
-          <View style={styles.imgContainer}>
+          <View style={[styles.imgContainer, {borderWidth: 0}]}>
             {Images && (
               <Image
                 style={{
-                  height: '100%',
+                  height: hasPurchased ? height / 1.2 : height / 1.6,
                   width: '100%',
                   alignItems: 'center',
                   resizeMode: 'contain',
+                  marginTop: '5%',
                 }}
                 source={{uri: Images}}
                 resizeMode="contain"
               />
             )}
           </View>
-          <View style={styles.btnContainer}>
+          <View
+            style={[styles.btnContainer, {bottom: hasPurchased ? '5%' : '9%'}]}>
             <View style={[styles.btn]}>
               {!setting.Swipe && count > 0 && (
                 <TouchableOpacity
@@ -336,15 +340,18 @@ const Detials = props => {
               )}
             </View>
           </View>
-          <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
-            <GAMBannerAd
-              unitId={ads.BANNER}
-              sizes={[BannerAdSize.FULL_BANNER]}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-            />
-          </View>
+          {!hasPurchased ? (
+            <View
+              style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
+              <GAMBannerAd
+                unitId={ads.BANNER}
+                sizes={[BannerAdSize.FULL_BANNER]}
+                requestOptions={{
+                  requestNonPersonalizedAdsOnly: true,
+                }}
+              />
+            </View>
+          ) : null}
         </View>
       </SafeAreaView>
     </GestureRecognizer>
@@ -378,7 +385,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   imgContainer: {
-    height: '75%',
+    height: height,
   },
   btnContainer: {
     position: 'absolute',

@@ -10,7 +10,15 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-const Header = ({onPress, onPress2, onPress3, mute, home}) => {
+const Header = ({
+  onPress,
+  onPressPuchase,
+  hasPurchased,
+  onPress2,
+  onPress3,
+  mute,
+  home,
+}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -21,7 +29,7 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
   const mt = useSelector(state => state.sound);
 
   const play = async () => {
-    isReady = await setupPlayer();
+    let isReady = await setupPlayer();
     await TrackPlayer.reset();
     let track = {
       url: require('../../asset2/babyflashtheme.mp3'), // Load media from the file system
@@ -57,6 +65,17 @@ const Header = ({onPress, onPress2, onPress3, mute, home}) => {
           resizeMode="contain"
         />
       </TouchableOpacity>
+      {!hasPurchased && home ? (
+        <TouchableOpacity
+          onPress={onPressPuchase}
+          style={{height: '80%', width: '60%'}}>
+          <Image
+            style={{height: '100%', width: '100%'}}
+            source={require('../../Assets4/upgrade.png')}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      ) : null}
       {home && (
         <View
         //  onPress={onPress3}

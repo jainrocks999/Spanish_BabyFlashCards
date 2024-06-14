@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../components/Header';
 import {useSelector, useDispatch} from 'react-redux';
@@ -20,8 +20,11 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 import ads from './Ads';
+import {IAPContext} from '../Context';
 
 const NextScreen = () => {
+  const {hasPurchased} = useContext(IAPContext);
+
   const navigation = useNavigation();
   const disapatch = useDispatch();
   const cat = useSelector(state => state.cat);
@@ -79,8 +82,8 @@ const NextScreen = () => {
             }}>
             <TouchableOpacity
               style={{
-                height: hp('9%'),
-                width: hp('9%'),
+                height: hp('8%'),
+                width: hp('8%'),
               }}
               onPress={() => {
                 navigation.dispatch(StackActions.replace('details'));
@@ -94,7 +97,7 @@ const NextScreen = () => {
             <Text
               style={{
                 fontSize: hp('3%'),
-                fontWeight: 'bold',
+                fontWeight: '500',
                 color: 'red',
                 marginTop: 5,
                 elevation: 5,
@@ -110,7 +113,7 @@ const NextScreen = () => {
             }}>
             <TouchableOpacity
               onPress={() => getNext(cat.index)}
-              style={{height: hp('9%'), width: hp('9%')}}>
+              style={{height: hp('8%'), width: hp('8%')}}>
               <Image
                 style={{height: '100%', width: '100%'}}
                 source={require('../../Assets4/btnnextcatg_normal.png')}
@@ -120,7 +123,7 @@ const NextScreen = () => {
             <Text
               style={{
                 fontSize: hp('3%'),
-                fontWeight: 'bold',
+                fontWeight: '500',
                 color: 'red',
                 marginTop: 5,
                 elevation: 5,
@@ -136,7 +139,7 @@ const NextScreen = () => {
             }}>
             <TouchableOpacity
               onPress={() => navigation.dispatch(StackActions.replace('home'))}
-              style={{height: hp('9%'), width: hp('9%')}}>
+              style={{height: hp('8%'), width: hp('8%')}}>
               <Image
                 style={{height: '100%', width: '100%'}}
                 source={require('../../Assets4/btnhome_normal.png')}
@@ -146,7 +149,7 @@ const NextScreen = () => {
             <Text
               style={{
                 fontSize: hp('3%'),
-                fontWeight: 'bold',
+                fontWeight: '500',
                 color: 'red',
                 marginTop: '5%',
                 elevation: 5,
@@ -155,15 +158,17 @@ const NextScreen = () => {
             </Text>
           </View>
         </View>
-        <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
-          <GAMBannerAd
-            unitId={ads.BANNER}
-            sizes={[BannerAdSize.FULL_BANNER]}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
-        </View>
+        {!hasPurchased ? (
+          <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
+            <GAMBannerAd
+              unitId={ads.BANNER}
+              sizes={[BannerAdSize.FULL_BANNER]}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </View>
+        ) : null}
       </ImageBackground>
     </SafeAreaView>
   );

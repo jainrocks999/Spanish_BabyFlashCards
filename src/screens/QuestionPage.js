@@ -6,7 +6,7 @@ import {
   BackHandler,
   Platform,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import {height, width} from '../components/Diemenstions';
@@ -31,7 +31,9 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ads from './Ads';
+import {IAPContext} from '../Context';
 const QuestionPage = props => {
+  const {hasPurchased} = useContext(IAPContext);
   const interstitial = InterstitialAd.createForAdRequest(ads.interstitial, {
     requestNonPersonalizedAdsOnly: true,
   });
@@ -82,7 +84,7 @@ const QuestionPage = props => {
     let isReady = await setupPlayer();
 
     if (count > 7) {
-      showAdd();
+      !hasPurchased ? showAdd() : null;
       setCount(1);
     }
     await TrackPlayer.reset();
@@ -273,15 +275,17 @@ const QuestionPage = props => {
           />
         </View>
 
-        <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
-          <GAMBannerAd
-            unitId={ads.BANNER}
-            sizes={[BannerAdSize.FULL_BANNER]}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
-        </View>
+        {!hasPurchased ? (
+          <View style={{position: 'absolute', bottom: 0, alignSelf: 'center'}}>
+            <GAMBannerAd
+              unitId={ads.BANNER}
+              sizes={[BannerAdSize.FULL_BANNER]}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </View>
+        ) : null}
       </View>
     </SafeAreaView>
   );

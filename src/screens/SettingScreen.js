@@ -10,7 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {height, width} from '../components/Diemenstions';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Switch from '../components/Switch';
 import {useDispatch, useSelector} from 'react-redux';
 import TrackPlayer from 'react-native-track-player';
@@ -27,6 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {isTablet} from 'react-native-device-info';
 import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 import ads from './Ads';
+import {IAPContext} from '../Context';
 var SQLite = require('react-native-sqlite-storage');
 const db = SQLite.openDatabase({
   name: 'eFlashSpanish.db',
@@ -34,7 +35,8 @@ const db = SQLite.openDatabase({
 });
 const SettingScreen = props => {
   const tablet = isTablet();
-
+  const {hasPurchased, requestPurchase, checkPurchases, visible, setVisible} =
+    useContext(IAPContext);
   const muted = useSelector(state => state.sound);
   const pr = props.route.params.pr;
   const [mute, setMute] = useState(muted);
@@ -42,7 +44,7 @@ const SettingScreen = props => {
   const setting = useSelector(state => state.setting);
   console.log(quesion);
   const Navigation = useNavigation();
-  const [visible, setVisible] = useState(false);
+
   const dispatch = useDispatch();
   const [togleSwitch, setToggleSwich] = useState({
     ActualVoice: setting.ActualVoice,
@@ -185,40 +187,38 @@ const SettingScreen = props => {
               styles.settingContainer,
               {marginTop: tablet ? '21%' : '30%'},
             ]}>
-            <Modal animationType="none" transparent={true} visible={visible}>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
-                    Enjoy an Ad-Free Experience with Multi-tasking!
-                  </Text>
-                  <Text style={styles.modalText1}>
-                    Get Ad-Free version for absolutely un-interrupted Play and
-                    learn experience for your child!
-                  </Text>
-                  <Text style={styles.modalText1}>
-                    Start Where you left without having to view splash screen
-                    again - The upgrade supports multi-tasking.
-                  </Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity
-                      style={[styles.button, styles.buttonClose]}
-                      onPress={() => setVisible(false)}>
-                      <Text style={styles.textStyle}>No</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => setVisible(false)}
-                      style={[styles.button, styles.buttonClose]}>
-                      <Text style={styles.textStyle}>Yes</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </Modal>
             <ImageBackground
               style={{flex: 1}}
               source={require('../../Assets4/settingpagebase.png')}>
+              {!hasPurchased ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    setVisible(true);
+                  }}
+                  style={{
+                    height: hp(7.5),
+                    marginTop: '3%',
+                    width: '80%',
+                    alignSelf: 'center',
+                  }}>
+                  <Image
+                    style={{height: '100%', width: '100%'}}
+                    source={require('../../Assets4/upgrade.png')}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              ) : null}
               <View
-                style={{marginTop: tablet ? '3%' : '10%', marginLeft: '5%'}}>
+                style={{
+                  marginTop: tablet
+                    ? hasPurchased
+                      ? '5%'
+                      : '1%'
+                    : hasPurchased
+                    ? '10%'
+                    : null,
+                  marginLeft: '5%',
+                }}>
                 <Switch
                   isSetting
                   text="Question mode"
@@ -280,6 +280,7 @@ const SettingScreen = props => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               marginHorizontal: '10%',
+              marginTop: hasPurchased ? '8%' : 0,
             }}>
             <TouchableOpacity
               onPress={async () => {
@@ -310,15 +311,17 @@ const SettingScreen = props => {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <View style={{position: 'absolute', alignSelf: 'center', bottom: 0}}>
-          <GAMBannerAd
-            unitId={ads.BANNER}
-            sizes={[BannerAdSize.FULL_BANNER]}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
-        </View>
+        {!hasPurchased ? (
+          <View style={{position: 'absolute', alignSelf: 'center', bottom: 0}}>
+            <GAMBannerAd
+              unitId={ads.BANNER}
+              sizes={[BannerAdSize.FULL_BANNER]}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </View>
+        ) : null}
       </ImageBackground>
     </SafeAreaView>
   );

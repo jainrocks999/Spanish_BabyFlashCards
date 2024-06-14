@@ -6,7 +6,7 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   BannerAd,
   TestIds,
@@ -25,6 +25,8 @@ import {addSetting} from '../reduxToolkit/Slice2';
 import {QuestionMode} from '../reduxToolkit/Slice3';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ads from './Ads';
+import {IAPContext} from '../Context';
+import PurcahsdeModal from '../components/requestPurchase';
 const db = SQLite.openDatabase({
   name: 'eFlashSpanish.db',
   createFromLocation: 1,
@@ -32,9 +34,10 @@ const db = SQLite.openDatabase({
 console.log(db);
 const Home = () => {
   const muted = useSelector(state => state.sound);
+  const {hasPurchased, requestPurchase, checkPurchases, visible, setVisible} =
+    useContext(IAPContext);
   const Navigation = useNavigation();
   const [mute, setMute] = useState(muted);
-  const [visible, setVisible] = useState(false);
 
   const dispatch = useDispatch();
   const adUnitId = TestIds.BANNER;
@@ -88,6 +91,9 @@ const Home = () => {
       );
     });
   };
+  const onClose = value => {
+    setVisible(value);
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#73cbea'}}>
@@ -97,50 +103,39 @@ const Home = () => {
         <Header
           onPress2={() => setMute(!mute)}
           mute={mute}
+          onPressPuchase={() => setVisible(true)}
           onPress3={() => setVisible(true)}
           onPress={() => Navigation.navigate('setting', {pr: 'home'})}
           home
+          hasPurchased={hasPurchased}
         />
-        <HorizontalList items={MyData} />
-        <View style={{alignSelf: 'center'}}>
-          <GAMBannerAd
-            unitId={ads.BANNER}
-            sizes={[BannerAdSize.FULL_BANNER]}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
+
+        {!hasPurchased ? (
+          <PurcahsdeModal
+            onPress={async () => {
+              requestPurchase();
+              setVisible(false);
+            }}
+            onClose={onClose}
+            visible={visible}
+            onRestore={() => {
+              checkPurchases(true);
             }}
           />
-        </View>
-      </ImageBackground>
-      <Modal animationType="none" transparent={true} visible={visible}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              Enjoy an Ad-Free Experience with Multi-tasking!
-            </Text>
-            <Text style={styles.modalText1}>
-              Get Ad-Free version for absolutely un-interrupted Play and learn
-              experience for your child!
-            </Text>
-            <Text style={styles.modalText1}>
-              Start Where you left without having to view splash screen again -
-              The upgrade supports multi-tasking.
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setVisible(false)}>
-                <Text style={styles.textStyle}>No</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setVisible(false)}
-                style={[styles.button, styles.buttonClose]}>
-                <Text style={styles.textStyle}>Yes</Text>
-              </TouchableOpacity>
-            </View>
+        ) : null}
+        <HorizontalList items={MyData} />
+        {!hasPurchased ? (
+          <View style={{alignSelf: 'center'}}>
+            <GAMBannerAd
+              unitId={ads.BANNER}
+              sizes={[BannerAdSize.FULL_BANNER]}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
           </View>
-        </View>
-      </Modal>
+        ) : null}
+      </ImageBackground>
     </SafeAreaView>
   );
 };
