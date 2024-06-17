@@ -124,7 +124,18 @@ const IAPProvider = ({children}) => {
 
   const requestPurchase = async () => {
     try {
-      const pucrs = await RNIap.requestPurchase({skus: constants.productSkus});
+      const skus = {
+        ...Platform.select({
+          android: {
+            skus: constants.productSkus,
+          },
+          ios: {
+            sku: constants.productSkus[0],
+          },
+        }),
+      };
+
+      const pucrs = await RNIap.requestPurchase(skus);
     } catch (error) {
       Alert.alert('Message', error.message);
       console.log('this siss error', error);

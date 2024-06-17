@@ -28,6 +28,7 @@ import {isTablet} from 'react-native-device-info';
 import {GAMBannerAd, BannerAdSize} from 'react-native-google-mobile-ads';
 import ads from './Ads';
 import {IAPContext} from '../Context';
+import PurcahsdeModal from '../components/requestPurchase';
 var SQLite = require('react-native-sqlite-storage');
 const db = SQLite.openDatabase({
   name: 'eFlashSpanish.db',
@@ -163,6 +164,9 @@ const SettingScreen = props => {
 
     return () => backHandler.remove();
   }, []);
+  const onClose = value => {
+    setVisible(value);
+  };
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#73cbea'}}>
       <ImageBackground
@@ -170,6 +174,19 @@ const SettingScreen = props => {
         style={{flex: 1}}
         source={require('../../Assets4/settingscreenimg.png')}>
         <Header onPress2={() => setMute(!mute)} mute={mute} />
+        {!hasPurchased ? (
+          <PurcahsdeModal
+            onPress={async () => {
+              requestPurchase();
+              setVisible(false);
+            }}
+            onClose={onClose}
+            visible={visible}
+            onRestore={() => {
+              checkPurchases(true);
+            }}
+          />
+        ) : null}
         {/* <TouchableOpacity onPress={() => setVisible(true)}>
           <Image
             style={{
@@ -213,7 +230,7 @@ const SettingScreen = props => {
                   marginTop: tablet
                     ? hasPurchased
                       ? '5%'
-                      : '1%'
+                      : '-1%'
                     : hasPurchased
                     ? '10%'
                     : null,
