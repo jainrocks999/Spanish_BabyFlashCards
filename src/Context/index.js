@@ -3,12 +3,10 @@ import * as RNIap from 'react-native-iap';
 import {constants} from '../constansts';
 import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Text} from 'react-native-animatable';
-
+import { Platform } from 'react-native';
 export const IAPContext = createContext();
 
 const IAPProvider = ({children}) => {
-  // console.log('thissisissi', children);
   const [hasPurchased, setHasPurchased] = useState(false);
   const [products, setProducts] = useState([]);
   const [visible, setVisible] = useState(false);
