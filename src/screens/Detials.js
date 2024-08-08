@@ -286,7 +286,7 @@ const Detials = props => {
             {Images && (
               <Image
                 style={{
-                  height: hasPurchased ? height / 1.2 : height / 1.4,
+                  height: hasPurchased ? height / 1.2 : height / 1.57,
                   width: '100%',
                   alignItems: 'center',
                   resizeMode: 'contain',

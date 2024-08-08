@@ -247,7 +247,7 @@ const QuestionPage = props => {
                   onPress={() => up(index)}
                   style={[
                     {
-                      height: hp(38),
+                      height: hp(34.5),
                       width: '46%',
                       marginHorizontal: '1.5%',
                       marginVertical: '1.5%',
